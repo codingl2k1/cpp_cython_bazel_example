@@ -1,0 +1,116 @@
+# Bazel build
+# C/C++ documentation: https://docs.bazel.build/versions/master/be/c-cpp.html
+
+# ************************** IMPORTANT ***********************
+# If a target or file is not found here, then please try searching in /src
+# We are in the middle of transitioning to a tree of build files.
+# If you would like to help with the move in your PR, please use `git mv` so that the history of the file is retained.
+
+load("@rules_python//python:defs.bzl", "py_library", "py_runtime", "py_runtime_pair")
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library", "cc_proto_library", "cc_test")
+load("//bazel:define.bzl", "COPTS", "PYX_COPTS", "PYX_SRCS", "copy_to_workspace")
+load("//bazel:cython_library.bzl", "pyx_library")
+
+package(
+    default_visibility = ["//visibility:public"],
+)
+
+# C/C++ toolchain constraint configs.
+
+config_setting(
+    name = "msvc-cl",
+    flag_values = {"@bazel_tools//tools/cpp:compiler": "msvc-cl"},
+)
+
+config_setting(
+    name = "clang-cl",
+    flag_values = {"@bazel_tools//tools/cpp:compiler": "clang-cl"},
+)
+
+config_setting(
+    name = "opt",
+    values = {"compilation_mode": "opt"},
+)
+
+cc_library(
+    name = "xoscar_lib",
+    srcs = glob(
+        [
+            "cpp/src/**/*.cc",
+        ],
+        exclude = [
+            "cpp/src/**/*_test.cc",
+        ],
+    ),
+    hdrs = glob(
+        [
+            "cpp/**/*.h",
+        ],
+    ),
+    copts = COPTS,
+    linkopts = select({
+        "@bazel_tools//src/conditions:windows": [
+        ],
+        "//conditions:default": [
+            "-lpthread",
+        ],
+    }),
+    visibility = ["//visibility:public"],
+    deps = [
+        "@boost//:asio",
+        "@boost//:beast",
+        "@boost//:system",
+        "@com_google_absl//absl/base:core_headers",
+        "@com_google_absl//absl/container:flat_hash_set",
+        "@com_google_absl//absl/memory",
+        "@com_google_absl//absl/strings",
+        "@com_google_googletest//:gtest",
+    ],
+)
+
+pyx_library(
+    name = "_xoscar",
+    srcs = glob([
+        "python/xoscar/__init__.py",
+        "python/xoscar/_raylet.pxd",
+        "python/xoscar/_raylet.pyx",
+    ]),
+    cc_kwargs = dict(
+        srcs = PYX_SRCS,
+        copts = COPTS + PYX_COPTS,
+        linkstatic = 1,
+    ),
+    deps = [
+        ":xoscar_lib",
+    ],
+)
+
+filegroup(
+    name = "python_sources",
+    srcs = glob([
+        "python/xoscar/*.py",
+    ]),
+)
+
+copy_to_workspace(
+    name = "cp_xoscar_so",
+    srcs = ["python/xoscar/_xoscar.so"],
+    dstdir = "python/xoscar",
+)
+
+genrule(
+    name = "xoscar_pkg",
+    srcs = [
+        ":_xoscar",
+        ":cp_xoscar_so",
+        ":python_sources",
+    ],
+    outs = ["xoscar_pkg.out"],
+    cmd = """
+        if [ "$${OSTYPE-}" = "msys" ]; then
+            ln -P -f -- python/xoscar/_xoscar.so python/xoscar/_xoscar.pyd
+        fi
+        echo "$${PWD}" > $@
+    """,
+    local = 1,
+)
