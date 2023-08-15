@@ -1,0 +1,163 @@
+# The build output should clearly not be checked in
+/bazel-*
+
+# Python byte code files
+*.pyc
+python/.eggs
+
+# Backup files
+*.bak
+
+# Emacs temporary files
+*~
+*#
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.xo
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Incremental linking files
+*.ilk
+
+# Library export files
+*.exp
+
+# Debug symbols
+*.pdb
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Visual Studio files
+/packages
+*.suo
+*.user
+*.VC.db
+*.VC.opendb
+
+# Protobuf-generated files
+*_pb2.py
+*.pb.h
+*.pb.cc
+
+# Ray cluster configuration
+scripts/nodes.txt
+
+# OS X folder attributes
+.DS_Store
+
+# Debug files
+*.dSYM/
+*.su
+
+# Python setup files
+*.egg-info
+
+# Compressed files
+*.gz
+
+# Datasets from examples
+**/MNIST_data/
+**/cifar-10-batches-bin/
+
+# Generated documentation files
+/doc/_build
+/doc/source/_static/thumbs
+/doc/source/tune/generated_guides/
+/doc/source/**/doc/
+
+# User-specific stuff:
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/dictionaries
+.llvm-local.bazelrc
+
+# Sensitive or high-churn files:
+.idea/**/dataSources/
+.idea/**/dataSources.ids
+.idea/**/dataSources.xml
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
+
+# Gradle:
+.idea/**/gradle.xml
+.idea/**/libraries
+.idea
+
+# Pytest Cache
+**/.pytest_cache
+**/.cache
+.benchmarks
+python-driver-*
+
+# Vscode
+.vscode/
+
+*.iml
+
+# python virtual env
+venv
+
+# pyenv version file
+.python-version
+
+# Vim
+.*.swp
+*.swp
+.*.swo
+*.swo
+tags
+tags.lock
+tags.temp
+*.vim
+
+# Emacs
+.#*
+
+# ray project files
+project-id
+.mypy_cache/
+
+# workflow storage
+workflow_data/
+
+# vscode java extention generated
+.factorypath
+
+# Jupyter Notebooks
+**/.ipynb_checkpoints/
+
+### Added by Hedron's Bazel Compile Commands Extractor: https://github.com/hedronvision/bazel-compile-commands-extractor
+# The external link: Differs on Windows vs macOS/Linux, so we can't check it in. The pattern needs to not have a trailing / because it's a symlink on macOS/Linux.
+/external
+# Compiled output -> don't check in
+/compile_commands.json
+# Directory where clangd puts its indexing work
+/.cache/
+
+# Auto-generated tag mapping
+tag-mapping.json
+
+.bazeliskrc

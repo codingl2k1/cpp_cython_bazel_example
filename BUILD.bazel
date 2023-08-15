@@ -1,0 +1,128 @@
+# Bazel build
+# C/C++ documentation: https://docs.bazel.build/versions/master/be/c-cpp.html
+
+# ************************** IMPORTANT ***********************
+# If a target or file is not found here, then please try searching in /src
+# We are in the middle of transitioning to a tree of build files.
+# If you would like to help with the move in your PR, please use `git mv` so that the history of the file is retained.
+
+load("@rules_cc//cc:defs.bzl", "cc_library")
+load("//bazel:define.bzl", "COPTS", "copy_to_workspace")
+load("//bazel:cython_library.bzl", "pyx_library")
+
+package(
+    default_visibility = ["//visibility:public"],
+)
+
+# C/C++ toolchain constraint configs.
+
+config_setting(
+    name = "msvc-cl",
+    flag_values = {"@bazel_tools//tools/cpp:compiler": "msvc-cl"},
+)
+
+config_setting(
+    name = "clang-cl",
+    flag_values = {"@bazel_tools//tools/cpp:compiler": "clang-cl"},
+)
+
+config_setting(
+    name = "opt",
+    values = {"compilation_mode": "opt"},
+)
+
+cc_library(
+    name = "cpp_lib",
+    srcs = glob(
+        [
+            "cpp/src/**/*.cc",
+            "cpp/src/**/*.cpp",
+        ],
+        exclude = [
+            "cpp/src/**/*_test.cc",
+            "cpp/src/**/*_test.cpp",
+        ],
+    ),
+    hdrs = glob(
+        [
+            "cpp/**/*.h",
+        ],
+    ),
+    copts = COPTS,
+    linkopts = select({
+        "@bazel_tools//src/conditions:windows": [
+        ],
+        "//conditions:default": [
+            "-lpthread",
+        ],
+    }),
+    visibility = ["//visibility:public"],
+    deps = [
+        "@boost//:asio",
+        "@boost//:beast",
+        "@boost//:system",
+        "@com_google_absl//absl/base:core_headers",
+        "@com_google_absl//absl/container:flat_hash_set",
+        "@com_google_absl//absl/memory",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+pyx_library(
+    name = "python_lib",
+    srcs = glob([
+        "python/*/__init__.py",
+        "python/*/*.pxd",
+        "python/*/*.pyx",
+    ]),
+    copts = COPTS,
+    deps = [
+        ":cpp_lib",
+    ],
+)
+
+python_package = glob(["python/*/__init__.py"])[0].split("/")[1]
+
+python_so_list = [f.split("/")[2].split(".")[0] for f in glob(["python/*/*.pyx"])]
+
+filegroup(
+    name = "python_sources",
+    srcs = glob([
+        "python/{}/*.py".format(python_package),
+    ]),
+)
+
+copy_to_workspace(
+    name = "cp_python_so",
+    srcs = ["python/{}/{}.so".format(python_package, so_name) for so_name in python_so_list],
+    dstdir = "python/{}".format(python_package),
+)
+
+win_rules = [
+    "ln -P -f -- python/{package_name}/{so_name}.so python/{package_name}/{so_name}.pyd".format(
+        package_name = python_package,
+        so_name = so_name,
+    )
+    for so_name in python_so_list
+]
+
+win_rules_str = "\n".join(win_rules)
+
+genrule(
+    name = "build",
+    srcs = [
+        ":python_lib",
+        ":cp_python_so",
+        ":python_sources",
+    ],
+    outs = ["build_pkg.out"],
+    cmd = """
+        if [ "$${OSTYPE-}" = "msys" ]; then
+        """ +
+          win_rules_str +
+          """
+        fi
+        echo "$${PWD}" > $@
+    """,
+    local = 1,
+)
