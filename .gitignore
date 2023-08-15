@@ -27,7 +27,6 @@ python/.eggs
 *.so
 *.dylib
 *.dll
-python/ray/_raylet.pyd
 
 # Incremental linking files
 *.ilk
@@ -37,10 +36,6 @@ python/ray/_raylet.pyd
 
 # Debug symbols
 *.pdb
-
-# Fortran module files
-*.mod
-!deploy/ray-operator/go.mod
 
 # Compiled Static libraries
 *.lai
@@ -111,11 +106,6 @@ scripts/nodes.txt
 .idea/**/libraries
 .idea
 
-# Website
-/site/Gemfile.lock
-/site/.sass-cache
-/site/_site
-
 # Pytest Cache
 **/.pytest_cache
 **/.cache
@@ -126,25 +116,6 @@ python-driver-*
 .vscode/
 
 *.iml
-
-# Java
-java/**/target
-java/**/lib
-java/**/.settings
-java/**/.classpath
-java/**/.project
-java/runtime/native_dependencies/
-java/testng_custom.xml
-
-dependency-reduced-pom.xml
-
-# Cpp
-cpp/example/thirdparty/
-
-.clwb
-
-# pom.xml files generated from pom_template.xml
-java/**/pom.xml
 
 # python virtual env
 venv
@@ -165,16 +136,9 @@ tags.temp
 # Emacs
 .#*
 
-# tools
-tools/prometheus*
-
 # ray project files
 project-id
 .mypy_cache/
-
-# release test related
-.anyscale.yaml
-test_state.json
 
 # workflow storage
 workflow_data/
