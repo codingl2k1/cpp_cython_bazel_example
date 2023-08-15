@@ -20,16 +20,6 @@ def deps_setup():
         url = "https://github.com/bazelbuild/bazel-skylib/releases/download/1.4.2/bazel-skylib-1.4.2.tar.gz",
     )
 
-    # http_archive(
-    #     # This rule is used by @com_github_nelhage_rules_boost and
-    #     # declaring it here allows us to avoid patching the latter.
-    #     name = "boost",
-    #     build_file = "@com_github_nelhage_rules_boost//:boost.BUILD",
-    #     sha256 = "0c6049764e80aa32754acd7d4f179fd5551d8172a83b71532ae093e7384e98da",
-    #     url = "https://github.com/boostorg/boost/releases/download/boost-1.83.0/boost-1.83.0.tar.gz",
-    #     strip_prefix = "boost-1.83.0",
-    # )
-
     # Boost
     # Famous C++ library that has given rise to many new additions to the C++ Standard Library
     # Makes @boost available for use: For example, add `@boost//:algorithm` to your deps.
