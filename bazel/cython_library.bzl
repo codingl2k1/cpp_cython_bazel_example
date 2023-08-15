@@ -70,8 +70,9 @@ def pyx_library(name, deps = [], cc_kwargs = {}, py_deps = [], srcs = [], **kwar
     for src in pyx_srcs:
         stem = src.split(".")[0]
         shared_object_name = stem + ".so"
+        shared_object_name = cc_kwargs.pop("name", shared_object_name)
         native.cc_binary(
-            name = cc_kwargs.pop("name", shared_object_name),
+            name = shared_object_name,
             srcs = [stem + ".cpp"] + cc_kwargs.pop("srcs", []),
             deps = deps + ["@local_config_python//:python_headers"] + cc_kwargs.pop("deps", []),
             defines = defines,

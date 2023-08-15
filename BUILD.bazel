@@ -68,11 +68,11 @@ cc_library(
 )
 
 pyx_library(
-    name = "_xoscar",
+    name = "xoscar_python_lib",
     srcs = glob([
         "python/xoscar/__init__.py",
-        "python/xoscar/_raylet.pxd",
-        "python/xoscar/_raylet.pyx",
+        "python/xoscar/_xoscar.pxd",
+        "python/xoscar/_xoscar.pyx",
     ]),
     cc_kwargs = dict(
         srcs = PYX_SRCS,
@@ -100,7 +100,7 @@ copy_to_workspace(
 genrule(
     name = "xoscar_pkg",
     srcs = [
-        ":_xoscar",
+        ":xoscar_python_lib",
         ":cp_xoscar_so",
         ":python_sources",
     ],

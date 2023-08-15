@@ -1,5 +1,9 @@
 workspace(name = "com_github_xorbitsai_xorscar")
 
+load("//bazel:python_deps.bzl", "python_deps")
+
+python_deps()
+
 load("//bazel:deps_setup.bzl", "deps_setup")
 
 deps_setup()
