@@ -6,8 +6,7 @@
 # We are in the middle of transitioning to a tree of build files.
 # If you would like to help with the move in your PR, please use `git mv` so that the history of the file is retained.
 
-load("@rules_python//python:defs.bzl", "py_library", "py_runtime", "py_runtime_pair")
-load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library", "cc_proto_library", "cc_test")
+load("@rules_cc//cc:defs.bzl", "cc_library")
 load("//bazel:define.bzl", "COPTS", "copy_to_workspace")
 load("//bazel:cython_library.bzl", "pyx_library")
 
@@ -82,18 +81,32 @@ pyx_library(
     ],
 )
 
+python_package = glob(["python/*/__init__.py"])[0].split("/")[1]
+
+python_so_list = [f.split("/")[2].split(".")[0] for f in glob(["python/*/*.pyx"])]
+
 filegroup(
     name = "python_sources",
     srcs = glob([
-        "python/xoscar/*.py",
+        "python/{}/*.py".format(python_package),
     ]),
 )
 
 copy_to_workspace(
     name = "cp_python_so",
-    srcs = ["python/xoscar/_xoscar.so"],
-    dstdir = "python/xoscar",
+    srcs = ["python/{}/{}.so".format(python_package, so_name) for so_name in python_so_list],
+    dstdir = "python/{}".format(python_package),
 )
+
+win_rules = [
+    "ln -P -f -- python/{package_name}/{so_name}.so python/{package_name}/{so_name}.pyd".format(
+        package_name = python_package,
+        so_name = so_name,
+    )
+    for so_name in python_so_list
+]
+
+win_rules_str = "\n".join(win_rules)
 
 genrule(
     name = "build",
@@ -102,10 +115,12 @@ genrule(
         ":cp_python_so",
         ":python_sources",
     ],
-    outs = ["xoscar_pkg.out"],
+    outs = ["build_pkg.out"],
     cmd = """
         if [ "$${OSTYPE-}" = "msys" ]; then
-            ln -P -f -- python/xoscar/_xoscar.so python/xoscar/_xoscar.pyd
+        """ +
+          win_rules_str +
+          """
         fi
         echo "$${PWD}" > $@
     """,
