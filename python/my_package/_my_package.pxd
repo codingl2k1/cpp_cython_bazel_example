@@ -1,5 +1,3 @@
-
-
 from libc.stdint cimport int32_t
 
 cdef extern from "cpp/include/my_header.h" nogil:

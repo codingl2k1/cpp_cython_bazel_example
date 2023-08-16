@@ -1,4 +1,4 @@
-from _my_package cimport c_add
+from my_package._my_package cimport c_add
 
 def add(a, b):
     return c_add(a, b)

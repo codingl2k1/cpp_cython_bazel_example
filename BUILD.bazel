@@ -8,7 +8,7 @@
 
 load("@rules_cc//cc:defs.bzl", "cc_library")
 load("//bazel:project.bzl", "COPTS", "copy_to_workspace")
-load("//bazel:cython_library.bzl", "pyx_library")
+load("//bazel/cy:cython_library.bzl", "pyx_library")
 
 package(
     default_visibility = ["//visibility:public"],

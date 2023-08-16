@@ -6,7 +6,7 @@ def deps_setup():
     """Install dependencies."""
     http_archive(
         name = "com_github_spdlog",
-        build_file = "@com_github_ray_project_ray//bazel:BUILD.spdlog",
+        build_file = "//bazel:BUILD.spdlog",
         urls = ["https://github.com/gabime/spdlog/archive/v1.7.0.zip"],
         sha256 = "c8f1e1103e0b148eb8832275d8e68036f2fdd3975a1199af0e844908c56f6ea5",
     )
@@ -34,6 +34,7 @@ def deps_setup():
         # Even better, set up Renovate and let it do the work for you (see "Suggestion: Updates" in the README).
         url = "https://github.com/nelhage/rules_boost/archive/cfa585b1b5843993b70aa52707266dc23b3282d0.tar.gz",
         strip_prefix = "rules_boost-cfa585b1b5843993b70aa52707266dc23b3282d0",
+        sha256 = "a7c42df432fae9db0587ff778d84f9dc46519d67a984eff8c79ae35e45f277c1",
         # When you first run this tool, it'll recommend a sha256 hash to put here with a message like: "DEBUG: Rule 'com_github_nelhage_rules_boost' indicated that a canonical reproducible form can be obtained by modifying arguments sha256 = ..."
     )
 
@@ -59,6 +60,7 @@ def deps_setup():
         name = "com_google_absl",
         url = "https://github.com/abseil/abseil-cpp/archive/refs/tags/20230802.0.zip",
         strip_prefix = "abseil-cpp-20230802.0",
+        sha256 = "2942db09db29359e0c1982986167167d226e23caac50eea1f07b2eb2181169cf",
     )
 
     http_archive(
@@ -77,11 +79,7 @@ def deps_setup():
 
     http_archive(
         name = "msgpack",
-        url = "https://github.com/msgpack/msgpack-c/archive/8085ab8721090a447cf98bb802d1406ad7afe420.tar.gz",
-        sha256 = "83c37c9ad926bbee68d564d9f53c6cbb057c1f755c264043ddd87d89e36d15bb",
-        patches = [
-            "@com_github_ray_project_ray//thirdparty/patches:msgpack-windows-iovec.patch",
-        ],
+        url = "https://github.com/msgpack/msgpack-c/archive/refs/tags/c-6.0.0.tar.gz",
     )
 
     http_archive(
@@ -89,5 +87,5 @@ def deps_setup():
         strip_prefix = "json-3.9.1",
         urls = ["https://github.com/nlohmann/json/archive/v3.9.1.tar.gz"],
         sha256 = "4cf0df69731494668bdd6460ed8cb269b68de9c19ad8c27abc24cd72605b2d5b",
-        build_file = "@com_github_ray_project_ray//bazel:BUILD.nlohmann_json",
+        build_file = "//bazel:BUILD.nlohmann_json",
     )

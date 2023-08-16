@@ -11,13 +11,15 @@ A simple example project for cpp + cython. The bazel files in this project are a
 ├── WORKSPACE
 ├── bazel
 │   ├── BUILD
-│   ├── BUILD.cython
+│   ├── BUILD.nlohmann_json
 │   ├── BUILD.spdlog
-│   ├── cython.BUILD
-│   ├── cython_library.bzl
-│   ├── define.bzl
+│   ├── cy
+│   │   ├── BUILD
+│   │   ├── cython.BUILD
+│   │   └── cython_library.bzl
 │   ├── deps_build_all.bzl
 │   ├── deps_setup.bzl
+│   ├── project.bzl
 │   ├── py
 │   │   ├── BUILD
 │   │   ├── BUILD.tpl

@@ -37,7 +37,7 @@ def python_deps():
     if "cython" not in native.existing_rules():
         http_archive(
             name = "cython",
-            build_file = "//bazel:cython.BUILD",
+            build_file = "//bazel/cy:cython.BUILD",
             sha256 = "a2da56cc22be823acf49741b9aa3aa116d4f07fa8e8b35a3cb08b8447b37c607",
             strip_prefix = "cython-0.29.35",
             urls = [
