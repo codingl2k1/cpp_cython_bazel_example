@@ -17,7 +17,6 @@ COPTS_WITHOUT_LOG = select({
 
 COPTS = COPTS_WITHOUT_LOG
 
-
 def copy_to_workspace(name, srcs, dstdir = ""):
     if dstdir.startswith("/") or dstdir.startswith("\\"):
         fail("Subdirectory must be a relative path: " + dstdir)

@@ -37,9 +37,11 @@ cc_library(
     srcs = glob(
         [
             "cpp/src/**/*.cc",
+            "cpp/src/**/*.cpp",
         ],
         exclude = [
             "cpp/src/**/*_test.cc",
+            "cpp/src/**/*_test.cpp",
         ],
     ),
     hdrs = glob(

@@ -20,7 +20,6 @@
 # Tensorflow's version as it is more actively maintained and works for gRPC
 # Python's needs.
 
-
 PYX_COPTS = select({
     "//:msvc-cl": [
     ],
@@ -44,7 +43,7 @@ PYX_SRCS = select({
     ],
 })
 
-def pyx_library(name, deps = [], py_deps = [], srcs = [], copts=[], **kwargs):
+def pyx_library(name, deps = [], py_deps = [], srcs = [], copts = [], **kwargs):
     """Compiles a group of .pyx / .pxd / .py files.
 
     First runs Cython to create .cpp files for each input .pyx or .py + .pxd
