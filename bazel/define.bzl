@@ -3,8 +3,6 @@ COPTS_WITHOUT_LOG = select({
     "//conditions:default": [],
 }) + select({
     "@bazel_tools//src/conditions:windows": [
-        # TODO(mehrdadn): (How to) support dynamic linking?
-        "-DRAY_STATIC",
     ],
     "//conditions:default": [
     ],
@@ -18,29 +16,6 @@ COPTS_WITHOUT_LOG = select({
 })
 
 COPTS = COPTS_WITHOUT_LOG
-
-PYX_COPTS = select({
-    "//:msvc-cl": [
-    ],
-    "//conditions:default": [
-        # Ignore this warning since CPython and Cython have issue removing deprecated tp_print on MacOS
-        "-Wno-deprecated-declarations",
-    ],
-}) + select({
-    "@bazel_tools//src/conditions:windows": [
-        "/FI" + "src/shims/windows/python-nondebug.h",
-    ],
-    "//conditions:default": [
-    ],
-})
-
-PYX_SRCS = [] + select({
-    "@bazel_tools//src/conditions:windows": [
-        "src/shims/windows/python-nondebug.h",
-    ],
-    "//conditions:default": [
-    ],
-})
 
 
 def copy_to_workspace(name, srcs, dstdir = ""):

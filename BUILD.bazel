@@ -8,7 +8,7 @@
 
 load("@rules_python//python:defs.bzl", "py_library", "py_runtime", "py_runtime_pair")
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library", "cc_proto_library", "cc_test")
-load("//bazel:define.bzl", "COPTS", "PYX_COPTS", "PYX_SRCS", "copy_to_workspace")
+load("//bazel:define.bzl", "COPTS", "copy_to_workspace")
 load("//bazel:cython_library.bzl", "pyx_library")
 
 package(
@@ -33,7 +33,7 @@ config_setting(
 )
 
 cc_library(
-    name = "xoscar_lib",
+    name = "cpp_lib",
     srcs = glob(
         [
             "cpp/src/**/*.cc",
@@ -68,19 +68,15 @@ cc_library(
 )
 
 pyx_library(
-    name = "xoscar_python_lib",
+    name = "python_lib",
     srcs = glob([
-        "python/xoscar/__init__.py",
-        "python/xoscar/_xoscar.pxd",
-        "python/xoscar/_xoscar.pyx",
+        "python/*/__init__.py",
+        "python/*/*.pxd",
+        "python/*/*.pyx",
     ]),
-    cc_kwargs = dict(
-        srcs = PYX_SRCS,
-        copts = COPTS + PYX_COPTS,
-        linkstatic = 1,
-    ),
+    copts = COPTS,
     deps = [
-        ":xoscar_lib",
+        ":cpp_lib",
     ],
 )
 
@@ -92,16 +88,16 @@ filegroup(
 )
 
 copy_to_workspace(
-    name = "cp_xoscar_so",
+    name = "cp_python_so",
     srcs = ["python/xoscar/_xoscar.so"],
     dstdir = "python/xoscar",
 )
 
 genrule(
-    name = "xoscar_pkg",
+    name = "build",
     srcs = [
-        ":xoscar_python_lib",
-        ":cp_xoscar_so",
+        ":python_lib",
+        ":cp_python_so",
         ":python_sources",
     ],
     outs = ["xoscar_pkg.out"],

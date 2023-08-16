@@ -19,7 +19,32 @@
 # been written at cython/cython and tensorflow/tensorflow. We branch from
 # Tensorflow's version as it is more actively maintained and works for gRPC
 # Python's needs.
-def pyx_library(name, deps = [], cc_kwargs = {}, py_deps = [], srcs = [], **kwargs):
+
+
+PYX_COPTS = select({
+    "//:msvc-cl": [
+    ],
+    "//conditions:default": [
+        # Ignore this warning since CPython and Cython have issue removing deprecated tp_print on MacOS
+        "-Wno-deprecated-declarations",
+    ],
+}) + select({
+    "@bazel_tools//src/conditions:windows": [
+        "/FI" + "src/shims/windows/python-nondebug.h",
+    ],
+    "//conditions:default": [
+    ],
+})
+
+PYX_SRCS = select({
+    "@bazel_tools//src/conditions:windows": [
+        "src/shims/windows/python-nondebug.h",
+    ],
+    "//conditions:default": [
+    ],
+})
+
+def pyx_library(name, deps = [], py_deps = [], srcs = [], copts=[], **kwargs):
     """Compiles a group of .pyx / .pxd / .py files.
 
     First runs Cython to create .cpp files for each input .pyx or .py + .pxd
@@ -31,9 +56,9 @@ def pyx_library(name, deps = [], cc_kwargs = {}, py_deps = [], srcs = [], **kwar
     Args:
         name: Name for the rule.
         deps: C/C++ dependencies of the Cython (e.g. Numpy headers).
-        cc_kwargs: cc_binary extra arguments such as copts, linkstatic, linkopts, features
         py_deps: Pure Python dependencies of the final library.
         srcs: .py, .pyx, or .pxd files to either compile or pass through.
+        copts: Custom compile options.
         **kwargs: Extra keyword arguments passed to the py_library.
     """
 
@@ -41,6 +66,7 @@ def pyx_library(name, deps = [], cc_kwargs = {}, py_deps = [], srcs = [], **kwar
     py_srcs = []
     pyx_srcs = []
     pxd_srcs = []
+
     for src in srcs:
         if src.endswith(".pyx") or (src.endswith(".py") and
                                     src[:-3] + ".pxd" in srcs):
@@ -70,14 +96,13 @@ def pyx_library(name, deps = [], cc_kwargs = {}, py_deps = [], srcs = [], **kwar
     for src in pyx_srcs:
         stem = src.split(".")[0]
         shared_object_name = stem + ".so"
-        shared_object_name = cc_kwargs.pop("name", shared_object_name)
         native.cc_binary(
             name = shared_object_name,
-            srcs = [stem + ".cpp"] + cc_kwargs.pop("srcs", []),
-            deps = deps + ["@local_config_python//:python_headers"] + cc_kwargs.pop("deps", []),
+            srcs = [stem + ".cpp"] + PYX_SRCS,
+            deps = deps + ["@local_config_python//:python_headers"],
+            copts = copts + PYX_COPTS,
             defines = defines,
-            linkshared = cc_kwargs.pop("linkshared", 1),
-            **cc_kwargs
+            linkshared = 1,
         )
         shared_objects.append(shared_object_name)
 
