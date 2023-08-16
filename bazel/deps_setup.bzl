@@ -1,6 +1,9 @@
+"""Define project dependencies."""
+
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 def deps_setup():
+    """Install dependencies."""
     http_archive(
         name = "com_github_spdlog",
         build_file = "@com_github_ray_project_ray//bazel:BUILD.spdlog",

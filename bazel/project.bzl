@@ -1,3 +1,5 @@
+"""Common defines and utils."""
+
 COPTS_WITHOUT_LOG = select({
     "//:opt": ["-DBAZEL_OPT"],
     "//conditions:default": [],

@@ -7,7 +7,7 @@
 # If you would like to help with the move in your PR, please use `git mv` so that the history of the file is retained.
 
 load("@rules_cc//cc:defs.bzl", "cc_library")
-load("//bazel:define.bzl", "COPTS", "copy_to_workspace")
+load("//bazel:project.bzl", "COPTS", "copy_to_workspace")
 load("//bazel:cython_library.bzl", "pyx_library")
 
 package(
