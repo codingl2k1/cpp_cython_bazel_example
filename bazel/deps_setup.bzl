@@ -7,8 +7,9 @@ def deps_setup():
     http_archive(
         name = "com_github_spdlog",
         build_file = "//bazel:BUILD.spdlog",
-        urls = ["https://github.com/gabime/spdlog/archive/v1.7.0.zip"],
-        sha256 = "c8f1e1103e0b148eb8832275d8e68036f2fdd3975a1199af0e844908c56f6ea5",
+        urls = ["https://github.com/gabime/spdlog/archive/v1.12.0.zip"],
+        strip_prefix = "spdlog-1.12.0",
+        sha256 = "6174bf8885287422a6c6a0312eb8a30e8d22bcfcee7c48a6d02d1835d7769232",
     )
 
     http_archive(
@@ -42,6 +43,7 @@ def deps_setup():
         name = "com_google_googletest",
         url = "https://github.com/google/googletest/archive/refs/tags/v1.13.0.tar.gz",
         sha256 = "ad7fdba11ea011c1d925b3289cf4af2c66a352e18d4c7264392fead75e919363",
+        strip_prefix = "googletest-1.13.0",
     )
 
     http_archive(
