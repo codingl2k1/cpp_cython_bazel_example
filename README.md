@@ -28,10 +28,10 @@ A simple example project for cpp + cython. The bazel files in this project are a
 │   └── python_deps.bzl
 ├── cpp
 │   ├── include
-│   │   └── my_header.h
+│   │   └── my_package
+│   │       └── my_header.h
 │   └── src
-│       ├── my_lib.cpp
-│       └── my_lib.h
+│       └── my_lib.cpp
 └── python
     └── my_package
         ├── __init__.py
